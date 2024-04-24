@@ -63,6 +63,7 @@ class _AddBlogState extends State<AddBlog> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Blog başarıyla kaydedildi.")),
             );
+            Navigator.pop(context);
           }
           if (state is BlogError) {
             final errorMessage = state.message;

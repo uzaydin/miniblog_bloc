@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:miniblog/models/blog.dart';
 import 'dart:convert';
@@ -17,7 +18,10 @@ class ArticleRepository {
     return body.map((element) => Blog.fromJson(element)).toList();
   }
 
-  Future<Blog> createBlog(Blog blog, XFile? file) async {
+  Future<Blog> createBlog(
+    Blog blog,
+    XFile? file,
+  ) async {
     var request = http.MultipartRequest('POST', url);
 
     // Blog verisini String türüne dönüştürüp ekliyoruz

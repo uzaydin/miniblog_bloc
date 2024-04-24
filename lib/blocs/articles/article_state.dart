@@ -16,8 +16,6 @@ class ArticlesLoadFail extends ArticleState {}
 
 // POST
 
-class BlogNotLoaded extends ArticleState {}
-
 class BlogLoading extends ArticleState {}
 
 class BlogSuccess extends ArticleState {
