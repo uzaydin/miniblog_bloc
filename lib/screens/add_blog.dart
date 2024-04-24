@@ -10,7 +10,7 @@ import 'package:miniblog/blocs/articles/article_state.dart';
 import 'package:miniblog/models/blog.dart';
 
 class AddBlog extends StatefulWidget {
-  const AddBlog({super.key});
+  const AddBlog({Key? key}) : super(key: key);
 
   @override
   _AddBlogState createState() => _AddBlogState();
@@ -29,17 +29,15 @@ class _AddBlogState extends State<AddBlog> {
       _formKey.currentState!.save();
 
       if (selectedImage != null) {
-        // BLoC event'ini tetikle
         BlocProvider.of<ArticleBloc>(context).add(
           CreateBlogEvent(
-              Blog(
-                title: blogTitle,
-                content: blogContent,
-                author: author,
-                // thumbnail:
-                //     selectedImage, // Blog modelinizde uygun şekilde ayarlamalısınız
-              ),
-              selectedImage),
+            Blog(
+              title: blogTitle,
+              content: blogContent,
+              author: author,
+            ),
+            selectedImage,
+          ),
         );
       }
     }
@@ -59,7 +57,20 @@ class _AddBlogState extends State<AddBlog> {
       appBar: AppBar(
         title: const Text("Yeni Blog Ekle"),
       ),
-      body: BlocBuilder<ArticleBloc, ArticleState>(
+      body: BlocConsumer<ArticleBloc, ArticleState>(
+        listener: (context, state) {
+          if (state is BlogSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Blog başarıyla kaydedildi.")),
+            );
+          }
+          if (state is BlogError) {
+            final errorMessage = state.message;
+            print("Hata: $errorMessage");
+          } else {
+            print("Beklenmeyen bir hata oluştu.");
+          }
+        },
         builder: (context, state) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -70,10 +81,12 @@ class _AddBlogState extends State<AddBlog> {
                   if (selectedImage != null)
                     Image.file(File(selectedImage!.path), height: 250),
                   ElevatedButton(
-                      onPressed: _pickImage, child: const Text("Fotoğraf Seç")),
+                    onPressed: _pickImage,
+                    child: const Text("Fotoğraf Seç"),
+                  ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      label: Text("Blog Başlığı Giriniz"),
+                      labelText: "Blog Başlığı Giriniz",
                     ),
                     onSaved: (newValue) {
                       blogTitle = newValue!;
@@ -87,7 +100,7 @@ class _AddBlogState extends State<AddBlog> {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      label: Text("Blog İçeriği Giriniz"),
+                      labelText: "Blog İçeriği Giriniz",
                     ),
                     onSaved: (newValue) {
                       blogContent = newValue!;
@@ -101,7 +114,7 @@ class _AddBlogState extends State<AddBlog> {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      label: Text("Yazar İsmi Giriniz"),
+                      labelText: "Yazar İsmi Giriniz",
                     ),
                     onSaved: (newValue) {
                       author = newValue!;
@@ -114,11 +127,9 @@ class _AddBlogState extends State<AddBlog> {
                     },
                   ),
                   ElevatedButton(
-                      onPressed: _submit, child: const Text("Kaydet")),
-                  if (state is BlogSuccess)
-                    const Text("Blog başarıyla kaydedildi."),
-                  if (state is BlogError)
-                    const Text("Blog kaydedilirken bir hata oluştu."),
+                    onPressed: _submit,
+                    child: const Text("Kaydet"),
+                  ),
                 ],
               ),
             ),

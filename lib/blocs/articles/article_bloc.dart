@@ -31,7 +31,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
       final blog = await articleRepository.createBlog(event.blog, event.file!);
       emit(BlogSuccess(blog: blog));
     } catch (e) {
-      emit(BlogError());
+      emit(BlogError(e.toString()));
     }
   }
 }

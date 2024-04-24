@@ -16,10 +16,7 @@ class ArticlesLoadFail extends ArticleState {}
 
 // POST
 
-
-
-
-class BlogNotLoaded extends ArticleState{}
+class BlogNotLoaded extends ArticleState {}
 
 class BlogLoading extends ArticleState {}
 
@@ -29,4 +26,8 @@ class BlogSuccess extends ArticleState {
   BlogSuccess({required this.blog});
 }
 
-class BlogError extends ArticleState {}
+class BlogError extends ArticleState {
+  final String message;
+
+  BlogError(this.message);
+}
